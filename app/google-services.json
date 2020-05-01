@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "924977001531",
+    "firebase_url": "https://next-1967.firebaseio.com",
+    "project_id": "next-1967",
+    "storage_bucket": "next-1967.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924977001531:android:3588e1f38fc0a42da7981e",
+        "android_client_info": {
+          "package_name": "com.zed.next"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924977001531-3h004t9i632pbmffnm587f54bh54n2i5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zed.next",
+            "certificate_hash": "1139934b06b8c5d5b3f57251b7cabfd7e807a393"
+          }
+        },
+        {
+          "client_id": "924977001531-l9j2050p45g950iaceu94p8vsn0iptfb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6WmZ46hfU8oVAFtNj3haHd600qgwKHug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924977001531-l9j2050p45g950iaceu94p8vsn0iptfb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

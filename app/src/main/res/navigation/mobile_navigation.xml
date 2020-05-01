@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_next">
+
+    <fragment
+        android:id="@+id/navigation_next"
+        android:name="com.zed.next.ui.neXt.NextFragment"
+        android:label="@string/title_next"
+        tools:layout="@layout/fragment_home">
+        <action android:id="@+id/navigation_next_to_done"
+            app:destination="@id/navigation_done"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/navigation_next" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_done"
+        android:name="com.zed.next.ui.done.DoneFragment"
+        android:label="@string/title_done"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/navigation_discover"
+        android:name="com.zed.next.ui.discover.DiscoverFragment"
+        android:label="@string/title_discover"
+        tools:layout="@layout/fragment_discover" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.zed.next.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
+
+  <!--  <fragment
+        android:id="@+id/navigation_follow"
+        android:name="com.zed.next.ui.follow.FollowFragment"
+        android:label="@string/title_follow"
+        tools:layout="@layout/fragment_notifications" />-->
+</navigation>
