@@ -6,6 +6,7 @@ import com.zed.next.domain.model.UserTopic;
 
 public interface NextAdapterListener {
 
-    void iconButtonOnClick(View v, UserTopic position);
+    void iconButtonOnClick(View v, UserTopic topic);
     void iconImageViewOnClick(View v, UserTopic topic);
+    void onSwipeToDelete(UserTopic topic);
 }

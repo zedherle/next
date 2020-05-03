@@ -41,7 +41,7 @@ public class DiscoverFragment extends Fragment {
     private DiscoverViewModel discoverViewModel;
     private SearchPageAdapter searchPageAdapter;
     private View view;
-    private List<MoviesModel> al = new ArrayList<>();
+    private List<MoviesModel> al =null;
     private String message;
 
 
@@ -66,7 +66,6 @@ public class DiscoverFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 // adapter.getFilter().filter(newText);
-
                 discoverViewModel.getMoviesByQuery(newText).observe(getActivity(), moviesModels -> {
                     al.clear();
                     al.addAll(moviesModels);
@@ -100,10 +99,10 @@ public class DiscoverFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_discover, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
 
+        al = new ArrayList<MoviesModel>();
 
         Intent intent = getActivity().getIntent();
         message = intent.getStringExtra(MainActivity.CURRENT_USER);
-
 
         discoverViewModel = ViewModelProviders.of(this).get(DiscoverViewModel.class);
 
@@ -115,8 +114,12 @@ public class DiscoverFragment extends Fragment {
             @Override
             public void onChanged(List<MoviesModel> moviesModels) {
 
-                al.addAll(moviesModels);
-                searchPageAdapter.notifyDataSetChanged();
+            if(al!=null) {
+                if(moviesModels!=null) {
+                    al.addAll(moviesModels);
+                    searchPageAdapter.notifyDataSetChanged();
+                }
+            }
 
             }
         });
@@ -141,8 +144,7 @@ public class DiscoverFragment extends Fragment {
 
         });
           recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-     //   recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-     //   recyclerView.setLayoutManager(new StaggeredGridLayoutManager());
+
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(new LinearLayoutManager(getContext())) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {

@@ -54,7 +54,8 @@ public class SearchPageAdapter extends RecyclerView.Adapter<SearchPageAdapter.Mo
         holder.txtTitle.setText(movie.getTitle());
         // holder.txtRating.setText(""+movie.getOverview());
         holder.txtReleaseDate.setText(movie.getReleaseDate());
-   //     holder.txtTopicType.setText("MOVIE");
+
+
         Glide.with(context).load("https://image.tmdb.org/t/p/w500/"+movie.getPosterPath()).into(holder.ivMovie);
 
         //  holder.bind(movie, movieClickListener);
@@ -90,9 +91,7 @@ public class SearchPageAdapter extends RecyclerView.Adapter<SearchPageAdapter.Mo
                     movie = movieList.get(getAdapterPosition());
                     UserTopic topic = new UserTopic();
                     TopicNextStat topicNextStat = new TopicNextStat();
-
                     topic.setTopic_id(""+movie.getId());
-                 //   topic.setUser_id(user_id);
                     topic.setTopic_title(movie.getTitle());
                     topic.setTopic_type("MOVIES");
                     topic.setTopic_poster(movie.getPosterPath());

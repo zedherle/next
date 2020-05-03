@@ -36,7 +36,6 @@ public class UserTopicRemoteRepository extends FirestoreCollections implements R
     @Override
     public MutableLiveData<Boolean> add(UserTopic item) {
 
-        Log.d("DONE", "Modified Msg: ");
         MutableLiveData<Boolean> isAdded = new MutableLiveData<Boolean>();
         String id = firestore.collection(USER_TOPIC_COLLECTION).document().getId();
         item.set_id(id);
@@ -44,9 +43,7 @@ public class UserTopicRemoteRepository extends FirestoreCollections implements R
         firestore.collection(USER_TOPIC_COLLECTION).document(id).set(item).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-               // String id = documentReference.getId();
                 isAdded.setValue(true);
-              //  onFireStoreTaskComplete.newTopicAdded(id);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -90,7 +87,20 @@ public class UserTopicRemoteRepository extends FirestoreCollections implements R
 
     @Override
     public MutableLiveData<Boolean> remove(UserTopic item) {
-        return null;
+        MutableLiveData<Boolean> isRemoved = new MutableLiveData<Boolean>();
+        firestore.collection(USER_TOPIC_COLLECTION).document(item.get_id()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                isRemoved.setValue(true);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                isRemoved.setValue(false);
+            }
+        });
+
+        return isRemoved;
     }
 
     @Override

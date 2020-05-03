@@ -88,6 +88,11 @@ public class TopicPageAdapter extends RecyclerView.Adapter<TopicPageAdapter.Movi
 
             btDone = itemView.findViewById(R.id.btDone);
 
+
+
+
+
+
             btDone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

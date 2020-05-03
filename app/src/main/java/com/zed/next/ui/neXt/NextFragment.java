@@ -1,6 +1,5 @@
 package com.zed.next.ui.neXt;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,41 +8,41 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.zed.next.MainActivity;
 import com.zed.next.R;
-import com.zed.next.data.datasource.services.api.APIClient;
-import com.zed.next.data.datasource.services.api.APIService;
-import com.zed.next.data.datasource.services.api.MovieResponse;
+import com.zed.next.domain.model.TopicDoneStat;
 import com.zed.next.domain.model.UserTopic;
+import com.zed.next.ui.common.DialogResult;
 import com.zed.next.ui.common.EndlessRecyclerViewScrollListener;
 import com.zed.next.ui.common.SwipeHelper;
-import com.zed.next.ui.discover.SearchPageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import retrofit2.Call;
 
 
 public class NextFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private Call<MovieResponse> call;
-    private NextViewModel nextViewModel;
-    private TopicPageAdapter movieAdapter;
-    private SearchPageAdapter searchPageAdapter;
-    private View view;
-    private List<UserTopic> al = new ArrayList<>();
-    String message;
 
+    private NextViewModel nextViewModel;
+    private TopicPageAdapter topicAdapter;
+    private View view;
+    private String message;
+
+    private RecyclerView recyclerView;
+    private ConstraintLayout constraintLayout;
+    private List<UserTopic> al = new ArrayList<>();
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -67,104 +66,92 @@ public class NextFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        constraintLayout = view.findViewById(R.id.nextLayout);
         recyclerView = view.findViewById(R.id.recyclerView);
-
-        Intent intent = getActivity().getIntent();
-        message = intent.getStringExtra(MainActivity.CURRENT_USER);
-
+        message = getActivity().getIntent().getStringExtra(MainActivity.CURRENT_USER);
         nextViewModel = ViewModelProviders.of(this).get(NextViewModel.class);
 
         initRecyclerView();
-
         enableSwipeToDeleteAndUndo();
 
         nextViewModel.getUserNextTopics(message).observe(this, new Observer<List<UserTopic>>() {
             @Override
             public void onChanged(List<UserTopic> userTopics) {
                 al.addAll(userTopics);
-                movieAdapter.notifyDataSetChanged();
+                topicAdapter.notifyDataSetChanged();
             }
         });
-
-
         return view;
-
-
     }
 
     private void initRecyclerView() {
 
-        movieAdapter = new TopicPageAdapter(al, getContext(), new NextAdapterListener() {
+        topicAdapter = new TopicPageAdapter(al, getContext(), new NextAdapterListener() {
             @Override
             public void iconButtonOnClick(View v, UserTopic position) {
-                    nextViewModel.topicDone(message, position);
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                DoneDialogFragment.display(fm, new DialogResult<TopicDoneStat>() {
+                            @Override
+                            public void onSubmit(TopicDoneStat result) {
+                                position.setTopicDoneStat(result);
+                                nextViewModel.topicDone(message, position);
+                            }
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        });
             }
 
             @Override
             public void iconImageViewOnClick(View v, UserTopic topic) {
 
             }
+
+            @Override
+            public void onSwipeToDelete(UserTopic topic) {
+
+            }
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(new LinearLayoutManager(getContext())) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if ((page + 1) <= 2) {
-                    loadPage(page + 1);
+                   // loadPage(page + 1);
                 }
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
-        recyclerView.setAdapter(movieAdapter);
-
-
+        recyclerView.setAdapter(topicAdapter);
     }
 
     private void enableSwipeToDeleteAndUndo() {
-        SwipeHelper swipeToDeleteCallback = new SwipeHelper(getContext()) {
+
+        SwipeHelper swipeHelper = new SwipeHelper(getContext()) {
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
-//                final String item = mAdapter.getData().get(position);
-//
-//                mAdapter.removeItem(position);
-
-//                Snackbar snackbar = Snackbar
-//                        .make(coordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
-//                snackbar.setAction("UNDO", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                        mAdapter.restoreItem(item, position);
-//                        recyclerView.scrollToPosition(position);
-//                    }
-//                });
-
-   //             snackbar.setActionTextColor(Color.YELLOW);
-     //           snackbar.show();
-
+                nextViewModel.topicDelete(message,al.get(position)).observe(getActivity(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        if(aBoolean)
+                        {
+                            al.remove(position);
+                            topicAdapter.notifyDataSetChanged();
+                            Snackbar.make(constraintLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG).show();
+                        }
+                        else
+                            Snackbar.make(constraintLayout, "Failed to remove from the list", Snackbar.LENGTH_LONG).show();
+                    }
+                });
             }
+
         };
 
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeHelper);
         itemTouchhelper.attachToRecyclerView(recyclerView);
-    }
-
-    private void loadPage(final int page) {
-
-        APIService movieDataService = APIClient.getClient();
-        switch (page) {
-            case 1:
-                call = movieDataService.getMovies(page, "df0009b053c2106b9e28a06fab0daedf");
-                break;
-            case 2:
-                call = movieDataService.getTopRatedMovies(page, "df0009b053c2106b9e28a06fab0daedf");
-                break;
-        }
-
     }
 
 }

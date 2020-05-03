@@ -27,8 +27,12 @@ import com.zed.next.BaseActivity;
 import com.zed.next.MainActivity;
 import com.zed.next.NextHomeActivity;
 import com.zed.next.R;
+import com.zed.next.data.repository.UserRemoteRepository;
+import com.zed.next.domain.model.UserModel;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 
 public class LoginActivity extends BaseActivity {
 
@@ -41,6 +45,7 @@ public class LoginActivity extends BaseActivity {
     private static final int RC_SIGN_IN = 9001;
     public static final String CURRENT_USER = "current_user";
     private static final String TAG = "LoginActivity";
+    LifecycleOwner lifecycleOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,7 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+        lifecycleOwner = this;
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,6 +188,7 @@ public class LoginActivity extends BaseActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = auth.getCurrentUser();
+
                             //startActivity(new Intent(HomeActivity., MainActivity.class));
                             //updateUI(user);
                             sendMessage(user);
@@ -200,11 +207,44 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void sendMessage(FirebaseUser user) {
-            Intent intent = new Intent(this, NextHomeActivity.class);
-            intent.putExtra(CURRENT_USER, user.getUid());
-            startActivity(intent);
-            finish();
 
+        UserRemoteRepository userRemoteRepository = new UserRemoteRepository();
 
+        userRemoteRepository.isIdExist(user.getUid()).observe(lifecycleOwner, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(!aBoolean)
+                {
+                    UserModel userModel = new UserModel();
+                    userModel.setUid(user.getUid());
+                    userModel.setFname(user.getDisplayName());
+                    userModel.setLname(user.getDisplayName());
+                    userModel.setEmail(user.getEmail());
+                    userModel.setDob("");
+                    userModel.setGender("");
+                    userModel.setCreated_on("");
+                    userModel.setImgPath("someURL");
+
+                    userRemoteRepository.add(userModel).observe(lifecycleOwner, new Observer<Boolean>() {
+                        @Override
+                        public void onChanged(Boolean aBoolean) {
+                            if(aBoolean)
+                            {
+                                callHome(user.getUid());
+                            }
+                        }
+                    });
+                }
+            }
+
+        });
+
+    }
+
+    private void callHome(String user) {
+        Intent intent = new Intent(this, NextHomeActivity.class);
+        intent.putExtra(CURRENT_USER, user);
+        startActivity(intent);
+        finish();
     }
 }

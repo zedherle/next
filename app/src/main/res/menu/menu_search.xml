@@ -9,7 +9,7 @@
         android:orderInCategory="100"
         android:title="Search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        android:iconifiedByDefault="false"
+        android:iconifiedByDefault="true"
         app:showAsAction="always">
 
     </item>

@@ -11,7 +11,6 @@ import android.widget.Button;
 import com.google.gson.Gson;
 import com.zed.next.MainActivity;
 import com.zed.next.R;
-import com.zed.next.data.datasource.remote.FirestoreDao;
 import com.zed.next.domain.model.UserDone;
 import com.zed.next.domain.model.UserTopic;
 import com.zed.next.ui.common.EndlessRecyclerViewScrollListener;
@@ -31,7 +30,6 @@ public class DoneFragment extends Fragment{
 
     private View view = null;
     private Gson gson;
-    private FirestoreDao firestoreDao;
     private Button btnNewDone;
     private RecyclerView recyclerView;
     private DonePageAdapter userDoneAdapter;

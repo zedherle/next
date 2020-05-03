@@ -48,6 +48,7 @@ public class DiscoverViewModel extends ViewModel {
         userTopicRemoteRepository = new UserTopicRemoteRepository(new UserTopicRemoteRepository.OnFireStoreTaskComplete() {
             @Override
             public void newTopicAdded(String id) {
+
                 isTopicNextAdded.setValue(true);
             }
 

@@ -8,15 +8,12 @@
         android:id="@+id/recyclerView"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_height="0dp" />
 
     <Button
         android:id="@+id/btnNewDone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:text="Add New" />
 

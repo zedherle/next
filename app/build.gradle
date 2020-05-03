@@ -29,6 +29,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
+        apply plugin: 'org.sonarqube'
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

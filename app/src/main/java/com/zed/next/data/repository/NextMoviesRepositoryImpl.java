@@ -49,7 +49,6 @@ public class NextMoviesRepositoryImpl  {
                     data.setValue(response.body().getResults());
 
                 }
-
             }
 
             @Override

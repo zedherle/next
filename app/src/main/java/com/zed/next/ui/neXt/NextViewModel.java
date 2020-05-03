@@ -64,4 +64,24 @@ public class NextViewModel extends ViewModel {
        userTopicRemoteRepository.update(userTopic);
        return isTopicDone;
     }
+
+    public LiveData<Boolean> topicDelete(String user_id, UserTopic userTopic)
+    {
+        this.userTopic = userTopic;
+        userTopicRemoteRepository = new UserTopicRemoteRepository(new UserTopicRemoteRepository.OnFireStoreTaskComplete() {
+            @Override
+            public void newTopicAdded(String id) {
+                isTopicDone.setValue(true);
+            }
+            @Override
+            public void onError(Exception e) {
+            }
+            @Override
+            public void onTopicsReceived(List<UserTopic> userTopics) {
+            }
+        });
+        isTopicDone=userTopicRemoteRepository.remove(userTopic);
+        return isTopicDone;
+    }
+
 }
